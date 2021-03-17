@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Node {
+    char value;
+    int count;
+    Node[] children = new Node[26];
+
+    public Node(char val) {
+        value = val;
+        count = 1;
+    }
+
+    public void incrementCount() {
+        count += 1;
+    }
+}
+
+class Trie {
+    static Node root = new Node('\0'); // Initializing with empty character
+
+    public static void addName(String name) {
+        Node currNode = root;
+        for(int i=0; i< name.length(); i++) {
+            char ch = name.charAt(i);
+            Node childNode = currNode.children[ch - 'a'];
+            if(childNode != null) {
+                childNode.incrementCount();
+            } else {
+                childNode = new Node(ch);
+                currNode.children[ch - 'a'] = childNode;
+            }
+            currNode = childNode;
+        }
+    }
+
+    public static int findPartial(String prefix) {
+        Node currNode = root;
+        for(int i=0; i< prefix.length(); i++) {
+            char ch = prefix.charAt(i);
+            if(currNode.children[ch - 'a'] == null) {
+                return 0;
+            } else {
+                currNode = currNode.children[ch - 'a'];
+            }
+        }
+        return currNode.count;
+    }
+}
+
+public class Test {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int n = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        for (int nItr = 0; nItr < n; nItr++) {
+            String[] opContact = scanner.nextLine().split(" ");
+            String contact = opContact[1];
+            String op = opContact[0].toLowerCase();
+
+            switch(op) {
+                case "add": Trie.addName(contact);
+                    break;
+                case "find": System.out.println(Trie.findPartial(contact));
+                    break;
+            }
+        }
+
+        scanner.close();
+    }
+}
