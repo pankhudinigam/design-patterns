@@ -1,0 +1,46 @@
+package com.walmart.services.lmde.biz.util;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
+public class Test {
+
+    public int recursion(List<String> input, String output, int i) {
+        if(i >= input.size()) return 0;
+        String elem = input.get(i);
+        boolean skipElem = Boolean.FALSE;
+        String uniqueElem = "";
+        for(char ch : elem.toCharArray()) {
+            if(uniqueElem.indexOf(ch) > -1) {
+                skipElem = Boolean.TRUE;
+                break;
+            } else {
+                uniqueElem = uniqueElem + ch;
+            }
+        }
+        if(!skipElem && output.length() > 0) {
+            for(char ch : elem.toCharArray()) {
+                if( output.indexOf(ch) > -1 ) {
+                    skipElem = Boolean.TRUE;
+                    break;
+                }
+            }
+        }
+        int excludedElemLength = recursion(input, output, i+1);
+        if(skipElem) {
+            return excludedElemLength;
+        }
+        return Math.max(elem.length() + recursion(input, output + elem , i+1), excludedElemLength);
+    }
+
+    public static void main(String[] args) {
+        // List<String> input = Arrays.asList("un", "iq", "ue");
+        // List<String> input = Arrays.asList("cha", "r", "act", "ers");
+        // List<String> input = Arrays.asList("abcdefghijklmnopqrstuvwxyz");
+        List<String> input = Arrays.asList("yy","bkhwmpbiisbldzknpm");
+        Test test = new Test();
+        System.out.println("Max length of concatenated string with unique characters: " + test.recursion(input, "", 0));
+    }
+}
