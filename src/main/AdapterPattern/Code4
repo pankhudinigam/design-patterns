@@ -1,0 +1,39 @@
+// recursive solution for longest substring with on repeating characters
+import java.util.*;
+
+class Solution {
+    public String formkey(String op, int index) {
+        return op + ":" + index;
+    }
+    
+    public int recursion(String ip, String op, int i, Map<String,Integer> memo ) {
+        if(i == ip.length()) 
+            return op.length();
+        char a = ip.charAt(i);
+        int excludedLength = 0;
+        if(memo.containsKey( formkey(op, i+1) )) {
+            excludedLength = memo.get( formkey(op, i+1) );
+        } else {
+            excludedLength = recursion(ip, "" + a, i+1, memo);
+            memo.put( formkey(op, i+1) , excludedLength);
+        }
+        if(op.indexOf(a) >= 0) {
+            return Math.max(op.length(), excludedLength);
+        } else {
+            int newLength = 0;
+            
+            if(memo.containsKey( formkey(op+a, i+1) )) {
+                newLength = memo.get( formkey(op + a, i+1) );
+            } else {
+                newLength = recursion(ip, op + a, i+1, memo);
+                memo.put( formkey(op+a, i+1) ,newLength);
+            }
+            return Math.max(newLength, excludedLength);
+        }
+    }
+    
+    public int lengthOfLongestSubstring(String s) {
+        Map<String,Integer> memo = new HashMap<>();
+        return recursion(s, "", 0, memo);
+    }
+}
